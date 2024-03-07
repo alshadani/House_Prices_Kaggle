@@ -100,7 +100,6 @@ def data_preprocessing(df):
         df['GarageArea_log'] = np.log1p(df['GarageArea'])
         df['WoodDeckSF_log'] = np.log1p(df['WoodDeckSF'])
         df['OpenPorchSF_log'] = np.log1p(df['OpenPorchSF'])
-
         return df 
 
 def feature_engineering(df):
@@ -112,11 +111,16 @@ def feature_engineering(df):
     df['MiscFeature_present'] = df['MiscFeature'].notnull().astype(int)
     df['Has_garage'] = (df['GarageType'] != 6).astype(int)
 
-    df['Gr_blt_year_combined'] = (df['GarageYrBlt'] + df['YearBuilt']) / 2
-    df['Gr_blt_year_combined'] = (df['GarageYrBlt'] + df['YearBuilt']) / 2
-    #df['Car_size_in_gr'] = df['GarageArea'] / df['GarageCars']
 
-    # Columns with a lot of missing data won't be used 
+    df['HouseAge'] = df['YrSold'] - df['YearBuilt']
+    df['HouseRemodelAge'] = df['YrSold'] - df['YearRemodAdd']
+    df['TotalSF'] = df['1stFlrSF'] + df['2ndFlrSF'] + df['BsmtFinSF1'] + df['BsmtFinSF2']
+    df['TotalArea'] = df['GrLivArea'] + df['TotalBsmtSF']
+    df['TotalArea_log'] = np.log1p(df['TotalArea'])
+    df['TotalBaths'] = df['BsmtFullBath'] + df['FullBath'] + 0.5 * (df['BsmtHalfBath'] + df['HalfBath']) 
+    df['TotalPorchSF'] = df['OpenPorchSF'] + df['3SsnPorch'] + df['EnclosedPorch'] + df['ScreenPorch'] + df['WoodDeckSF']
+    df['TotalPorchSF_log'] = np.log1p(df['TotalPorchSF'])
+        # Columns with a lot of missing data won't be used 
     df = df.drop(columns=['Alley', 'MasVnrType', 'FireplaceQu', 'PoolQC', 'Fence', 'MiscFeature'])
 
     return df 
